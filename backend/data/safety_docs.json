@@ -1,0 +1,62 @@
+[
+  {
+    "id": "1",
+    "title": "Personal Protective Equipment (PPE)",
+    "category": "Equipment Safety",
+    "content": "All workers must wear appropriate PPE including hard hats, safety glasses, steel-toed boots, and high-visibility vests when on the work floor. PPE must be inspected before each use and replaced if damaged. Hard hats must meet ANSI/ISEA Z89.1 standards. Gloves must be appropriate for the task: cut-resistant for sharp objects, chemical-resistant for hazardous materials. Hearing protection required in areas above 85 dB."
+  },
+  {
+    "id": "2",
+    "title": "Chemical Hazard Handling (OSHA 29 CFR 1910.1200)",
+    "category": "Hazardous Materials",
+    "content": "Before handling any chemical, review the Safety Data Sheet (SDS). Always use appropriate PPE: chemical-resistant gloves, splash goggles, and respirators as specified on SDS. Store chemicals in properly labeled containers away from incompatible substances. In case of chemical spill: evacuate area, call emergency response team, do not re-enter without proper PPE. Eye wash stations must be within 10 seconds travel from hazardous chemical areas."
+  },
+  {
+    "id": "3",
+    "title": "Fire Safety and Emergency Evacuation",
+    "category": "Emergency Procedures",
+    "content": "Know the location of all fire extinguishers, fire alarms, and emergency exits. In case of fire: Alert others using fire alarm, evacuate using nearest marked exit, do not use elevators, meet at designated assembly point. PASS technique for fire extinguisher: Pull pin, Aim at base, Squeeze handle, Sweep side to side. Fire extinguishers inspected monthly. Emergency exit routes must remain clear at all times."
+  },
+  {
+    "id": "4",
+    "title": "Lockout/Tagout Procedures (OSHA 29 CFR 1910.147)",
+    "category": "Equipment Safety",
+    "content": "Before servicing any machinery, follow LOTO: Notify affected employees, identify all energy sources, shut down equipment using normal stopping procedure, isolate all energy sources, apply lockout/tagout devices, release or restrain stored energy, verify isolation by attempting to start. Each worker must apply their own personal lock. Never remove another worker's lock. Annual LOTO training required for all affected employees."
+  },
+  {
+    "id": "5",
+    "title": "Incident Reporting Procedure",
+    "category": "Compliance",
+    "content": "All workplace incidents must be reported immediately to supervisor. Near-misses must also be reported - they indicate potential hazards. Steps: Ensure scene safety and provide first aid, notify supervisor immediately, complete incident report within 24 hours, preserve evidence for investigation, cooperate with incident investigation. OSHA recordable incidents must be logged on OSHA 300 log. Fatalities and hospitalizations reported to OSHA within 8 hours."
+  },
+  {
+    "id": "6",
+    "title": "Working at Heights - Fall Protection (OSHA 29 CFR 1926.502)",
+    "category": "Construction Safety",
+    "content": "Fall protection required when working at heights of 4 feet in general industry or 6 feet in construction. Approved fall protection: guardrail systems (top rail 42 inches high), safety net systems, or personal fall arrest systems. Inspect all fall protection equipment before each use - check for cuts, fraying, broken components. Never tie off to objects not rated for fall loads. Ladders: maintain 3-point contact, do not stand on top 2 rungs, secure top and bottom."
+  },
+  {
+    "id": "7",
+    "title": "Forklift and Powered Industrial Truck Safety",
+    "category": "Equipment Safety",
+    "content": "Only certified operators may operate forklifts - certification required every 3 years. Pre-shift inspection mandatory: check brakes, steering, lights, horn, forks, tires. Always wear seatbelt. Never exceed rated load capacity. Keep forks 6-10 inches from ground while traveling. Sound horn at intersections and blind spots. Pedestrians always have right-of-way. No riders unless second seat provided. Never raise loads near power lines - maintain 10-foot minimum clearance."
+  },
+  {
+    "id": "8",
+    "title": "Electrical Safety (NFPA 70E)",
+    "category": "Electrical Hazards",
+    "content": "Only qualified electricians may work on electrical systems. Never work on energized equipment without proper authorization and PPE. Use voltage-rated insulated tools. Maintain 3-foot clearance from electrical panels. Ground all portable electrical equipment. Use GFCIs in wet or outdoor locations. Report exposed wiring, damaged cords, or sparking equipment immediately. Arc flash PPE required based on incident energy analysis. Lock out electrical energy before maintenance."
+  },
+  {
+    "id": "9",
+    "title": "Confined Space Entry (OSHA 29 CFR 1910.146)",
+    "category": "Hazardous Operations",
+    "content": "Permit-required confined spaces need entry permits before entry. Atmospheric testing required: oxygen 19.5-23.5%, flammable gases below 10% LEL, toxic contaminants below PEL. Require: entry supervisor, attendant outside, entrant with retrieval system. Continuous atmospheric monitoring during entry. Rescue equipment must be available. No entry if atmospheric hazards cannot be controlled. Train all workers who work in or near confined spaces."
+  },
+  {
+    "id": "10",
+    "title": "Heat Illness Prevention",
+    "category": "Worker Health",
+    "content": "Provide water, rest, and shade in hot environments. Workers new to heat exposure need acclimatization - 20% workload increase per day over 7-14 days. Heat illness signs: heavy sweating, weakness, dizziness, nausea. Heat stroke is life-threatening: hot dry skin, confusion, loss of consciousness. Heat stroke response: call 911, move to cool area, cool with ice packs to neck, armpits, groin. Buddy system required in extreme heat. Monitor heat index - work/rest schedules when above 91°F."
+  }
+]

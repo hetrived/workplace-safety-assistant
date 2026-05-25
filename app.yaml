@@ -1,0 +1,23 @@
+command: ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+
+env:
+  - name: GROQ_API_KEY
+    valueFrom:
+      secretFrom:
+        scope: workplace-safety
+        key: GROQ_API_KEY
+  - name: DATABRICKS_HOST
+    valueFrom:
+      secretFrom:
+        scope: workplace-safety
+        key: DATABRICKS_HOST
+  - name: DATABRICKS_HTTP_PATH
+    valueFrom:
+      secretFrom:
+        scope: workplace-safety
+        key: DATABRICKS_HTTP_PATH
+  - name: DATABRICKS_TOKEN
+    valueFrom:
+      secretFrom:
+        scope: workplace-safety
+        key: DATABRICKS_TOKEN
