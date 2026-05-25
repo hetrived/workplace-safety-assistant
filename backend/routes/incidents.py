@@ -22,15 +22,26 @@ async def list_incidents():
 @router.post("/")
 async def add_incident(data: IncidentCreate):
     incident = create_incident(data.model_dump())
-    if data.severity == "high":
-        create_notification(
-            title="High Severity Incident",
-            message=f"New high severity incident reported: {data.title} at {data.location}",
-            notif_type="critical"
-        )
+    type_map = {"high": "critical", "medium": "warning", "low": "info"}
+    create_notification(
+        title=f"New Incident Reported",
+        message=f"{data.title} — {data.severity.upper()} severity at {data.location}",
+        notif_type=type_map.get(data.severity, "info")
+    )
     return incident
 
 @router.patch("/{incident_id}/status")
 async def update_status(incident_id: str, body: StatusUpdate):
     update_incident_status(incident_id, body.status)
+    status_map = {
+        "resolved": ("Incident Resolved", "success"),
+        "investigating": ("Incident Under Investigation", "warning"),
+        "open": ("Incident Reopened", "warning"),
+    }
+    title, notif_type = status_map.get(body.status, ("Incident Updated", "info"))
+    create_notification(
+        title=title,
+        message=f"Incident status changed to {body.status}",
+        notif_type=notif_type
+    )
     return {"success": True}

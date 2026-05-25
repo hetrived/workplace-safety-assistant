@@ -16,6 +16,47 @@ def get_connection():
         access_token=os.getenv("DATABRICKS_TOKEN")
     )
 
+SEED_INCIDENTS = [
+    {"title": "Chemical Spill - Zone B",    "description": "Minor acid spill near storage unit 3",            "severity": "high",   "location": "Zone B",          "reported_by": "John Smith",  "status": "open",          "created_at": "2026-05-24T09:30:00"},
+    {"title": "Forklift Near-Miss",         "description": "Forklift passed too close to pedestrian walkway", "severity": "medium", "location": "Warehouse",        "reported_by": "Sarah Lee",   "status": "investigating", "created_at": "2026-05-23T14:15:00"},
+    {"title": "PPE Non-Compliance",         "description": "Worker found without hard hat in mandatory zone",  "severity": "low",    "location": "Zone A",           "reported_by": "Mike Brown",  "status": "resolved",      "created_at": "2026-05-22T11:00:00"},
+    {"title": "Equipment Malfunction",      "description": "Conveyor belt emergency stop triggered",           "severity": "high",   "location": "Production Floor", "reported_by": "Anna Davis",  "status": "open",          "created_at": "2026-05-21T16:45:00"},
+    {"title": "Electrical Hazard Reported", "description": "Exposed wiring found near workstation 7",          "severity": "high",   "location": "Assembly Line",    "reported_by": "Tom Wilson",  "status": "resolved",      "created_at": "2026-05-20T08:20:00"},
+]
+
+SEED_NOTIFICATIONS = [
+    {"title": "Critical Alert",     "message": "Chemical spill reported in Zone B - immediate response required", "type": "critical", "is_read": False, "created_at": "2026-05-25T10:00:00"},
+    {"title": "Safety Reminder",    "message": "Monthly fire drill scheduled for tomorrow at 10 AM",              "type": "info",     "is_read": False, "created_at": "2026-05-25T08:00:00"},
+    {"title": "Compliance Due",     "message": "PPE inspection reports due by end of week",                       "type": "warning",  "is_read": True,  "created_at": "2026-05-24T09:00:00"},
+    {"title": "Incident Resolved",  "message": "Electrical hazard at workstation 7 has been resolved",            "type": "success",  "is_read": True,  "created_at": "2026-05-23T15:00:00"},
+]
+
+def _seed_table(cursor, conn):
+    # Auto-remove any old numeric-style IDs (UUIDs are 36 chars, numeric IDs are short)
+    cursor.execute("DELETE FROM safety_incidents WHERE LENGTH(id) < 10")
+    cursor.execute("DELETE FROM notifications WHERE LENGTH(id) < 10")
+    conn.commit()
+
+    cursor.execute("SELECT COUNT(*) FROM safety_incidents")
+    if cursor.fetchone()[0] == 0:
+        for s in SEED_INCIDENTS:
+            cursor.execute(
+                "INSERT INTO safety_incidents VALUES (?,?,?,?,?,?,?,?)",
+                [str(uuid.uuid4()), s["title"], s["description"], s["severity"], s["location"], s["reported_by"], s["status"], s["created_at"]]
+            )
+        conn.commit()
+        print("Seeded safety_incidents with UUID ids")
+
+    cursor.execute("SELECT COUNT(*) FROM notifications")
+    if cursor.fetchone()[0] == 0:
+        for n in SEED_NOTIFICATIONS:
+            cursor.execute(
+                "INSERT INTO notifications VALUES (?,?,?,?,?,?)",
+                [str(uuid.uuid4()), n["title"], n["message"], n["type"], n["is_read"], n["created_at"]]
+            )
+        conn.commit()
+        print("Seeded notifications with UUID ids")
+
 def init_tables():
     global USE_MOCK
     try:
@@ -53,6 +94,7 @@ def init_tables():
             ) USING DELTA
         """)
         conn.commit()
+        _seed_table(cursor, conn)
         cursor.close()
         conn.close()
         print("Databricks tables initialized successfully")
@@ -97,9 +139,11 @@ def create_incident(data: dict):
         "created_at": datetime.now().isoformat()
     }
     if USE_MOCK:
+        print("[DEBUG] Using mock — skipping Databricks")
         MOCK_INCIDENTS.insert(0, incident)
         return incident
     try:
+        print(f"[DEBUG] Inserting to Databricks: {incident['title']}")
         conn = get_connection()
         cursor = conn.cursor()
         cursor.execute(
@@ -109,7 +153,9 @@ def create_incident(data: dict):
         conn.commit()
         cursor.close()
         conn.close()
-    except Exception:
+        print("[DEBUG] Insert complete")
+    except Exception as e:
+        print(f"[Databricks INSERT error] {e}")
         MOCK_INCIDENTS.insert(0, incident)
     return incident
 
@@ -120,6 +166,7 @@ def update_incident_status(incident_id: str, status: str):
                 inc["status"] = status
         return
     try:
+        print(f"[DEBUG] Updating status in Databricks: {incident_id} → {status}")
         conn = get_connection()
         cursor = conn.cursor()
         cursor.execute(
@@ -129,7 +176,9 @@ def update_incident_status(incident_id: str, status: str):
         conn.commit()
         cursor.close()
         conn.close()
-    except Exception:
+        print("[DEBUG] Status update complete")
+    except Exception as e:
+        print(f"[Databricks UPDATE error] {e}")
         for inc in MOCK_INCIDENTS:
             if inc["id"] == incident_id:
                 inc["status"] = status

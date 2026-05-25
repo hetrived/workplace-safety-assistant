@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { AlertTriangle, CheckCircle, Activity, TrendingUp, ShieldAlert } from 'lucide-react'
 import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts'
@@ -28,12 +28,20 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(true)
   const navigate = useNavigate()
 
-  useEffect(() => {
-    Promise.all([getAnalytics(), getIncidents()])
-      .then(([a, i]) => { setAnalytics(a); setIncidents(i.slice(0, 5)) })
-      .catch(() => {})
-      .finally(() => setLoading(false))
+  const fetchData = useCallback(async () => {
+    try {
+      const [a, i] = await Promise.all([getAnalytics(), getIncidents()])
+      setAnalytics(a)
+      setIncidents(i.slice(0, 5))
+    } catch {}
+    setLoading(false)
   }, [])
+
+  useEffect(() => {
+    fetchData()
+    const interval = setInterval(() => fetchData(), 15000)
+    return () => clearInterval(interval)
+  }, [fetchData])
 
   if (loading) return (
     <div className="flex items-center justify-center h-64">

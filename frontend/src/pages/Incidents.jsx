@@ -35,12 +35,16 @@ export default function Incidents() {
       setIncidents(prev => [inc, ...prev])
       setShowForm(false)
       setForm({ title: '', description: '', severity: 'medium', location: '', reported_by: '' })
+      window.dispatchEvent(new Event('notifications-refresh'))
     } catch {}
     setSubmitting(false)
   }
 
   const handleStatus = async (id, newStatus) => {
-    try { await updateIncidentStatus(id, newStatus) } catch {}
+    try {
+      await updateIncidentStatus(id, newStatus)
+      window.dispatchEvent(new Event('notifications-refresh'))
+    } catch {}
     setIncidents(prev => prev.map(i => i.id === id ? { ...i, status: newStatus } : i))
   }
 

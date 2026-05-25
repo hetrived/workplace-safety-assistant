@@ -25,8 +25,12 @@ export default function NotificationBell() {
 
   useEffect(() => {
     load()
-    const interval = setInterval(load, 30000)
-    return () => clearInterval(interval)
+    const interval = setInterval(load, 10000)
+    window.addEventListener('notifications-refresh', load)
+    return () => {
+      clearInterval(interval)
+      window.removeEventListener('notifications-refresh', load)
+    }
   }, [])
 
   useEffect(() => {
@@ -47,7 +51,7 @@ export default function NotificationBell() {
   return (
     <div className="relative" ref={ref}>
       <button
-        onClick={() => setOpen(o => !o)}
+        onClick={() => { setOpen(o => !o); load() }}
         className="relative p-2 rounded-lg hover:bg-safety-border transition-colors"
       >
         <Bell size={20} className="text-safety-muted" />
