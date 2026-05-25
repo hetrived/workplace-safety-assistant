@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 from pydantic import BaseModel
-from services.groq_ai import get_safety_response
+from services.claude_ai import get_safety_response
 
 router = APIRouter()
 

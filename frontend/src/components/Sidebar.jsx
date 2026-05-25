@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react'
 import { NavLink } from 'react-router-dom'
 import { LayoutDashboard, MessageSquare, BookOpen, AlertTriangle, Shield } from 'lucide-react'
 
@@ -9,6 +10,27 @@ const nav = [
 ]
 
 export default function Sidebar() {
+  const [dbStatus, setDbStatus] = useState('checking')
+
+  useEffect(() => {
+    fetch('/api/analytics/')
+      .then(r => r.ok ? setDbStatus('mock') : setDbStatus('offline'))
+      .catch(() => setDbStatus('offline'))
+
+    fetch('/api/health/')
+      .then(r => r.json())
+      .then(d => setDbStatus(d.databricks === 'connected' ? 'connected' : 'mock'))
+      .catch(() => {})
+  }, [])
+
+  const statusConfig = {
+    checking:  { color: 'bg-yellow-400',       text: 'text-yellow-400',  label: 'Checking...',         sub: 'Connecting to Databricks' },
+    connected: { color: 'bg-safety-success',   text: 'text-safety-success', label: 'Databricks Live',  sub: 'SQL Warehouse connected' },
+    mock:      { color: 'bg-safety-orange',    text: 'text-safety-orange',  label: 'Demo Mode',        sub: 'Using sample data' },
+    offline:   { color: 'bg-red-400',          text: 'text-red-400',        label: 'Backend Offline',  sub: 'Start the backend server' },
+  }
+  const s = statusConfig[dbStatus]
+
   return (
     <aside className="w-64 bg-safety-sidebar border-r border-safety-border flex flex-col shrink-0">
       {/* Logo */}
@@ -50,10 +72,10 @@ export default function Sidebar() {
       <div className="p-4 border-t border-safety-border">
         <div className="card !p-3">
           <div className="flex items-center gap-2 mb-1">
-            <div className="w-2 h-2 bg-safety-success rounded-full animate-pulse-slow" />
-            <span className="text-xs text-safety-success font-medium">System Online</span>
+            <div className={`w-2 h-2 ${s.color} rounded-full animate-pulse-slow`} />
+            <span className={`text-xs ${s.text} font-medium`}>{s.label}</span>
           </div>
-          <p className="text-xs text-safety-muted">Databricks Connected</p>
+          <p className="text-xs text-safety-muted">{s.sub}</p>
         </div>
       </div>
     </aside>

@@ -1,19 +1,23 @@
 import { useState, useEffect } from 'react'
-import { AlertTriangle, CheckCircle, Activity, TrendingUp, ShieldAlert, Users } from 'lucide-react'
+import { useNavigate } from 'react-router-dom'
+import { AlertTriangle, CheckCircle, Activity, TrendingUp, ShieldAlert } from 'lucide-react'
 import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts'
 import { getAnalytics, getIncidents } from '../api'
 
 const COLORS = ['#EF4444', '#F59E0B', '#22C55E']
 
-const StatCard = ({ icon: Icon, label, value, sub, color }) => (
-  <div className="card flex items-center gap-4">
+const StatCard = ({ icon: Icon, label, value, color, onClick }) => (
+  <div
+    onClick={onClick}
+    className={`card flex items-center gap-4 transition-all duration-200 ${onClick ? 'cursor-pointer hover:border-safety-orange/60 hover:scale-[1.02]' : ''}`}
+  >
     <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${color}`}>
       <Icon size={22} className="text-white" />
     </div>
     <div>
       <p className="text-2xl font-bold text-safety-text">{value}</p>
       <p className="text-sm font-medium text-safety-text">{label}</p>
-      {sub && <p className="text-xs text-safety-muted">{sub}</p>}
+      {onClick && <p className="text-xs text-safety-orange mt-0.5">Click to view →</p>}
     </div>
   </div>
 )
@@ -22,6 +26,7 @@ export default function Dashboard() {
   const [analytics, setAnalytics] = useState(null)
   const [incidents, setIncidents] = useState([])
   const [loading, setLoading] = useState(true)
+  const navigate = useNavigate()
 
   useEffect(() => {
     Promise.all([getAnalytics(), getIncidents()])
@@ -47,10 +52,10 @@ export default function Dashboard() {
     <div className="space-y-6">
       {/* Stat cards */}
       <div className="grid grid-cols-2 xl:grid-cols-4 gap-4">
-        <StatCard icon={AlertTriangle}  label="Total Incidents"    value={stats.total_incidents || 0}   color="bg-safety-orange"         />
-        <StatCard icon={ShieldAlert}    label="Open Incidents"     value={stats.open_incidents || 0}    color="bg-red-500"               />
-        <StatCard icon={CheckCircle}    label="Resolved"           value={stats.resolved_incidents || 0} color="bg-green-600"            />
-        <StatCard icon={TrendingUp}     label="Compliance Rate"    value={`${stats.compliance_rate || 0}%`} color="bg-blue-600"         />
+        <StatCard icon={AlertTriangle} label="Total Incidents"  value={stats.total_incidents || 0}      color="bg-safety-orange" onClick={() => navigate('/incidents')} />
+        <StatCard icon={ShieldAlert}   label="Open Incidents"   value={stats.open_incidents || 0}       color="bg-red-500"       onClick={() => navigate('/incidents')} />
+        <StatCard icon={CheckCircle}   label="Resolved"         value={stats.resolved_incidents || 0}   color="bg-green-600"     onClick={() => navigate('/incidents')} />
+        <StatCard icon={TrendingUp}    label="Compliance Rate"  value={`${stats.compliance_rate || 0}%`} color="bg-blue-600"    />
       </div>
 
       {/* Charts row */}
