@@ -1,20 +1,20 @@
 import { useState, useRef, useEffect } from 'react'
-import { Send, Loader2, Zap } from 'lucide-react'
+import { Send, Loader2, Zap, Database, BookOpen } from 'lucide-react'
 import ChatMessage from '../components/ChatMessage'
 import { sendMessage } from '../api'
 
 const QUICK = [
-  'How do I handle a chemical spill?',
-  'What PPE is required on the floor?',
-  'How do I report an incident?',
-  'What are forklift safety rules?',
+  'How many open incidents do we have?',
+  'What PPE is required for chemical handling?',
+  'Show me high severity incidents',
   'Explain lockout/tagout procedure',
   'What to do in case of fire?',
+  'Fall protection requirements for heights?',
 ]
 
 const WELCOME = {
   role: 'assistant',
-  content: "Hello! I'm SafetyAI, your workplace safety assistant. I can help you with safety protocols, OSHA guidelines, incident procedures, and equipment handling. How can I help you stay safe today?",
+  content: "Hello! I'm SafetyAI, your workplace safety assistant powered by **Databricks Genie Space** and **Knowledge Assistant**.\n\n## I can answer two types of questions:\n- **Data questions** — \"How many open incidents?\", \"Show high severity cases\" → queries your live Databricks data\n- **Safety knowledge** — PPE, OSHA guidelines, emergency procedures → searches 5 indexed safety PDF documents\n\nHow can I help you stay safe today?",
   sources: []
 }
 
@@ -56,7 +56,14 @@ export default function Chat() {
         <div className="p-4 border-b border-safety-border flex items-center gap-3">
           <div className="w-2 h-2 bg-safety-success rounded-full animate-pulse-slow" />
           <span className="text-sm font-medium">SafetyAI is online</span>
-          <span className="text-xs text-safety-muted ml-auto">Powered by Claude AI + OSHA Guidelines</span>
+          <div className="ml-auto flex items-center gap-3">
+            <span className="flex items-center gap-1 text-[10px] bg-safety-border text-safety-muted px-2 py-1 rounded-full">
+              <Database size={9} className="text-green-400" /> Genie Space
+            </span>
+            <span className="flex items-center gap-1 text-[10px] bg-safety-border text-safety-muted px-2 py-1 rounded-full">
+              <BookOpen size={9} className="text-safety-orange" /> Knowledge Assistant
+            </span>
+          </div>
         </div>
 
         {/* Messages */}
