@@ -166,7 +166,7 @@ def update_incident_status(incident_id: str, status: str):
                 inc["status"] = status
         return
     try:
-        print(f"[DEBUG] Updating status in Databricks: {incident_id} → {status}")
+        print(f"[DEBUG] Updating status in Databricks: {incident_id} -> {status}")
         conn = get_connection()
         cursor = conn.cursor()
         cursor.execute(
