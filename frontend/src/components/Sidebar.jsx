@@ -9,18 +9,16 @@ const nav = [
   { to: '/incidents', icon: AlertTriangle,   label: 'Incidents'      },
 ]
 
+const API_URL = import.meta.env.VITE_API_URL || ''
+
 export default function Sidebar() {
   const [dbStatus, setDbStatus] = useState('checking')
 
   useEffect(() => {
-    fetch('/api/analytics/')
-      .then(r => r.ok ? setDbStatus('mock') : setDbStatus('offline'))
-      .catch(() => setDbStatus('offline'))
-
-    fetch('/api/health/')
+    fetch(`${API_URL}/api/health/`)
       .then(r => r.json())
       .then(d => setDbStatus(d.databricks === 'connected' ? 'connected' : 'mock'))
-      .catch(() => {})
+      .catch(() => setDbStatus('offline'))
   }, [])
 
   const statusConfig = {
