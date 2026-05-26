@@ -39,11 +39,12 @@ def ask_knowledge_assistant(question: str) -> str:
     context = search_documents(question)
     doc_list = "\n".join([f"- {d['title']}" for d in PDF_DOCS])
 
+    context_block = f"Use this retrieved context to answer:\n\n{context}" if context else "Answer based on OSHA standards and safety best practices."
     system = f"""You are SafetyAI Knowledge Assistant, an expert workplace safety advisor.
 You have access to 5 official safety documents:
 {doc_list}
 
-{"Use this retrieved context to answer:\n\n" + context if context else "Answer based on OSHA standards and safety best practices."}
+{context_block}
 
 Format responses with markdown headers (##), bullet points (-), and **bold** for key terms.
 Be specific, cite regulations where relevant, and keep answers actionable."""
