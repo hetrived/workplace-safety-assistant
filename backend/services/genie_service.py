@@ -30,9 +30,15 @@ def ask_genie(question: str) -> str | None:
             msg    = r2.json()
             status = msg.get("status", "")
             if status == "COMPLETED":
-                for att in msg.get("attachments", []):
+                attachments = msg.get("attachments", [])
+                # Prefer the text attachment (natural language answer)
+                for att in attachments:
                     if "text" in att:
-                        return att["text"].get("content", "")
+                        text_content = att["text"].get("content", "")
+                        if text_content:
+                            return text_content
+                # Fall back to query description + table
+                for att in attachments:
                     if "query" in att:
                         return _format_table(att["query"])
                 return "Query completed — no data returned."

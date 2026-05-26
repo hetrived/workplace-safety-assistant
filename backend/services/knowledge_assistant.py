@@ -3,7 +3,7 @@ import anthropic
 from dotenv import load_dotenv
 from pathlib import Path
 
-load_dotenv(dotenv_path=Path(__file__).parent.parent / '.env')
+load_dotenv(dotenv_path=Path(__file__).parent.parent / '.env', override=True)
 
 client = anthropic.Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY"))
 
@@ -15,14 +15,28 @@ PDF_DOCS = [
     {"file": "Fall_Protection_Standards.pdf","title": "Fall Protection and Working at Heights Safety Standards"},
 ]
 
+STOP_WORDS = {
+    "what", "when", "where", "which", "have", "does", "should", "would", "could",
+    "that", "this", "with", "from", "they", "them", "their", "there", "been",
+    "will", "much", "many", "some", "than", "then", "also", "into", "more",
+    "about", "after", "before", "during", "required", "requirements", "must",
+    "need", "needs", "used", "using", "need", "workplace", "safety", "worker",
+    "workers", "employee", "employees", "work", "working", "osha",
+}
+
 def search_documents(question: str) -> str:
-    """Search safety_documents Delta Table, fall back to local doc list."""
+    """Search safety_documents Delta Table using domain-specific keywords."""
     try:
         from services.databricks import get_connection
         conn   = get_connection()
         cursor = conn.cursor()
-        keywords = [w.strip("?.,!") for w in question.lower().split() if len(w) > 3]
+        words = [w.strip("?.,!:;") for w in question.lower().split()]
+        keywords = [w for w in words if len(w) > 3 and w not in STOP_WORDS]
+        if not keywords:
+            keywords = [w for w in words if len(w) > 3][:5]
         conditions = " OR ".join([f"LOWER(content) LIKE '%{kw}%'" for kw in keywords[:5]])
+        if not conditions:
+            return ""
         cursor.execute(
             f"SELECT doc_name, section, content FROM safety_documents WHERE {conditions} LIMIT 5"
         )
